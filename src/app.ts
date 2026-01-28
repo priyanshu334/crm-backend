@@ -2,8 +2,9 @@ import express from "express"
 import helmet from "helmet"
 import cors from "cors"
 import morgan from "morgan"
-import { stream } from "winston"
+
 import { Logger } from "./config/logger"
+import AuthRouter from "./modules/auth/auth.routes"
 
 export const app = express()
 
@@ -17,9 +18,9 @@ app.use(morgan("combined", {
   }
 }))
 
+app.use("/api/auth", AuthRouter)
 app.get("/health", (req, res) => {
   res.json({ status: "ok" })
 })
-
 
 
