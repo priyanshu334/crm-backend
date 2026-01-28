@@ -5,6 +5,7 @@ import morgan from "morgan"
 
 import { Logger } from "./config/logger"
 import AuthRouter from "./modules/auth/auth.routes"
+import CustomerRouter from "./modules/customer/customer.router"
 
 export const app = express()
 
@@ -19,6 +20,7 @@ app.use(morgan("combined", {
 }))
 
 app.use("/api/auth", AuthRouter)
+app.use("/api/customers", CustomerRouter)
 app.get("/health", (req, res) => {
   res.json({ status: "ok" })
 })
