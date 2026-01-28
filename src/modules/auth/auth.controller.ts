@@ -17,7 +17,7 @@ export class AuthController {
   }
   static async Login(req: Request, res: Response) {
     const data = LoginSchema.parse(req.body)
-    const result = await AuthService.Login(data.email, data.password)
+    const result = await AuthService.LoginUser(data.email, data.password)
     res.json(result)
   }
 }

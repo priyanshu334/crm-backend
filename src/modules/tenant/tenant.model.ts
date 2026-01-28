@@ -15,11 +15,11 @@ const TenantSchema = new Schema<Tenant>(
       required: true
     },
     plan: {
-      tyep: String,
-      enum: ["free", "pro", "enterprise"]
-      ,
-      default: "free"
+      type: String,
+      enum: ["free", "pro", "enterprise"],
+      default: "free",
     },
+
 
   },
   { timestamps: true }

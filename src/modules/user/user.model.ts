@@ -20,7 +20,7 @@ const UserSchema = new Schema<User>(
       ref: "Tenant",
       required: true,
     }
-  }
+  },
   { timestamps: true }
 )
 

@@ -1,21 +1,18 @@
 import { UserModel } from "../user/user.model"
 import { TenantModel } from "../tenant/tenant.model"
 import bcrypt from "bcrypt"
+import { AppError } from "../../utils/apiError";
 import jwt from "jsonwebtoken"
-import { AppError } from "../../utils/apiError"
-import { env } from "../../config/env"
+import { env } from "../../config/env";
 export class AuthService {
   static async RegisterCompany(CompanyName: string, email: string, password: string) {
-    const exists = await UserModel.findOne({ email: email })
+    const existing = await UserModel.findOne({ email });
 
-    if (exists) {
-      throw new AppError(400, "user already exists")
-
+    if (existing) {
+      throw new AppError(401, "Email already registered ")
     }
-
     const tenant = await TenantModel.create({ name: CompanyName })
-    const hashed = await bcrypt.hash(password, 10)
-
+    const hashed = await bcrypt.hash(password, 10);
 
     const user = await UserModel.create({
       email,
@@ -26,36 +23,38 @@ export class AuthService {
 
     const token = jwt.sign({
       userId: user._id,
-      tenandId: tenant._id,
-      role: user.role
+      tenantId: tenant._id,
+      role: user.role,
+    },
+      env.JWT_SECRET,
 
-    }, env.JWT_SECTET,
       { expiresIn: "15m" }
     )
     return { token }
   }
 
-  static async Login(email: string, password: string) {
+  static async LoginUser(email: string, password: string) {
     const user = await UserModel.findOne({ email })
-
     if (!user) {
-      throw new AppError(400, "Invalid user or password")
+      throw new AppError(401, "Invalid email or password");
+    }
+    const valid = bcrypt.compare(password, user.password);
+    if (!valid) {
+      throw new AppError(401, "Invalid password")
     }
 
-    const isValid = await bcrypt.compare(password, user.password)
-    if (!isValid) {
-      throw new AppError(401, "Invalid email or passoword")
-    }
     const token = jwt.sign(
       {
         userId: user._id,
-        tenantId: user.tenantId,
+        tenandId: user.tenantId,
         role: user.role,
+
       },
-      env.JWT_SECTET,
+      env.JWT_SECRET,
       { expiresIn: "15m" }
     )
+
     return { token }
   }
-
 }
+

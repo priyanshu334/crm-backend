@@ -21,7 +21,7 @@ export function AuthMiddleware(req: AuthRequest, res: Response, next: NextFuncti
   }
   const token = header.split(" ")[1];
   try {
-    const decode = jwt.verify(token, env.JWT_SECTET) as AuthRequest["user"];
+    const decode = jwt.verify(token, env.JWT_SECRET) as AuthRequest["user"];
 
     req.user = decode;
     next();
